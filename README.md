@@ -1,2 +1,1 @@
-# NinjaGame
-NinjaGame
+# boilerplate-2022-marchs
