@@ -130,18 +130,28 @@ class Game {
 
       let sunTexture = new PIXI.Texture.from('../assets/images/sun.png');
       let mySun = new PIXI.Sprite(sunTexture);
-      mySun.y = -200;
+      // mySun.y = -200; //Til animation OBS Husk at slå til under eventlistener
       this.scene.addChild(mySun);
 
       //BOXES
-      
-      let leftBox = PIXI.Texture.from('./assets/images/left_box.png');
-      let LBox = new PIXI.Sprite(leftBox);
-      this.scene.addChild(LBox);
 
-      let middleBox = PIXI.Texture.from('./assets/images/middle_box.png');
-      let MBox = new PIXI.Sprite(middleBox);
-      this.scene.addChild(MBox);
+      let props = {
+        boxes: [
+        '../assets/images/left_box.png',
+        '../assets/images/middle_box.png',
+        '../assets/images/right_box.png',
+        ],
+        PositionX: [100, 400, 660],
+        PositionY: [450, 450, 450]
+      };
+
+      for(let i =0;i<props.boxes.length;i++){
+        let box = PIXI.Texture.from(props.boxes[i]);
+        let _box = new PIXI.Sprite(box);
+        _box.x=props.PositionX[i];
+        _box.y=props.PositionY[i];
+        this.scene.addChild(_box);
+      }
 
       play.on('pointerdown', (event)=>{
 
@@ -161,12 +171,12 @@ class Game {
           volume: .2,
         });
         
-        gsap.to(mySun, {
+        // gsap.to(mySun, {
 
-          duration: .5,
-          y: play.y-200,
-          ease: "Elastic.easeInOut",
-        });
+        //   duration: .5,
+        //   y: play.y-200,
+        //   ease: "Elastic.easeInOut",
+        // });
 
         let sound = new Howl({
           src: ['./assets/sound/musicloop.mp3'],
