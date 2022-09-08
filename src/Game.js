@@ -4,6 +4,7 @@ import Stage from './Stage.js';
 import {gsap} from 'gsap';
 import { Howl } from 'howler';
 import Enemy from './Enemy.js';
+import HitTest from './HitTest.js';
 
 class Game {
 
@@ -153,6 +154,20 @@ class Game {
         this.scene.addChild(_box);
       }
 
+      //IDLE NIGHT
+
+      // let idle = setTimeout(()=>{
+
+      //   let _bg_night = PIXI.Texture.from('./assets/images/background_night.png');
+      //   let _bgnight = new Sprite(_bg_night);
+      //   _bgnight.x = -310;
+      //   this.scene.addChild(_bgnight);
+      //   console.log("kaffe")
+
+      // },500 )
+
+
+
       play.on('pointerdown', (event)=>{
 
         event.stopPropagation();
@@ -171,6 +186,7 @@ class Game {
           volume: .2,
         });
         
+        //Sun Animation comming down
         // gsap.to(mySun, {
 
         //   duration: .5,
@@ -193,13 +209,33 @@ class Game {
         this.enemy = new Enemy({
         
           name: res.alienspine,
-          addTo:this.scene,
+          addTo: this.scene,
 
         });
+
+        //bob the builder WIFI
+        //alien-ninja2030
+        
 
       }); //End Eventlistener
 
     } )//End loader
+
+    this.ht = new HitTest();
+
+    let ticker = PIXI.Ticker.shared;
+
+    ticker.add( ()=>{
+
+      if(this.enemy !=undefined){
+
+        console.log("true")
+
+      } else{
+        console.log("undefined")
+      }
+
+    })
 
   } // END constructor
 } // END class

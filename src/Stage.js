@@ -40,6 +40,10 @@ class Stage {
         this.bg.scale.x = this.bg.scale.y = this.scaleFactor;
         this.bg.scale.y = this.bg.scale.x = this.appHeight / this.targetHeight;
 
+    //Background Night Container
+
+            
+
     //Scene Container
 
         this.scene = new PIXI.Container();
