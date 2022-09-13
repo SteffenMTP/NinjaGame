@@ -12,6 +12,8 @@ class Game {
 
     this.enemy;
     
+    this.SoundArray = ["ia1", "ia2", "JumpSound_1"]
+
     this.myStage = new Stage();
     this.scene = this.myStage.scene;
     this.scene.sortableChildren = true;
@@ -40,6 +42,13 @@ class Game {
 
       let sheet = PIXI.Loader.shared.resources['../assets/spritesheet/ninjarack.json'].spritesheet;
       
+      this.hitareaNinja = new PIXI.Graphics();
+      this.hitareaNinja.beginFill(0xDE3249);
+      this.hitareaNinja.drawRect(500-150, 550, 300, 200);
+      this.hitareaNinja.alpha= .5;
+      this.hitareaNinja.endFill();
+      this.scene.addChild(this.hitareaNinja);
+
       this.ninja = new PIXI.AnimatedSprite(sheet.animations['alien']);
       
       //Placering
@@ -79,8 +88,18 @@ class Game {
       //---------------------------------------------------------------------------
       
       
+      
 
       this.sI.app.stage.on('pointerdown', (event)=>{
+
+
+        let getFromSoundArray = this.SoundArray[Math.floor(Math.random()* this.SoundArray.length)];
+
+        this.ia = new Howl({
+          src: ['./assets/sound/' + getFromSoundArray + '.mp3'],
+          volume: .1,
+        })
+        this.ia.play();
 
         this.ninja.stop();
         this.ninja.texture = PIXI.Texture.from('../assets/images/ninja-jump.png');
@@ -196,6 +215,7 @@ class Game {
 
         let sound = new Howl({
           src: ['./assets/sound/musicloop.mp3'],
+          fade:(0,1, 1000),
           autoplay: true,
           loop: true,
         })
@@ -229,13 +249,103 @@ class Game {
 
       if(this.enemy !=undefined){
 
-        console.log("true")
+        this.enemy.enemies.forEach( _enemy => {
 
-      } else{
-        console.log("undefined")
-      }
+          if(this.ht.checkme(this.ninja, _enemy.getChildAt(1)) && _enemy.alive == true) {
+            
+            const currentEnemySpriteSheet = _enemy.getChildAt(0);
 
-    })
+            currentEnemySpriteSheet.state.setAnimation(0, "die", true);
+
+            if(_enemy.alive){
+              this.hitSound = new Howl({
+
+                src: ['./assets/sound/effekt_hit.mp3'],
+                volume: .2,
+
+              })
+
+              this.hitSound.play();
+            }
+
+            let enemyDieTimeline = gsap.timeline({
+
+              onComplete: ()=>{
+  
+                this.scene.removeChild(_enemy);
+  
+              }//END Complete
+  
+            });
+  
+            //Start Timeline
+            enemyDieTimeline.to(_enemy, {y: 300, duration: .7, ease: "Circ.easeOut"});
+            enemyDieTimeline.to(_enemy, {y: 1200, duration: .5, ease: "Circ.easeIn"});
+
+            _enemy.alive = false;
+            _enemy.attack = false;
+
+          }//END Checkme
+
+
+          //Hittest
+          if(this.ht.checkme(this.hitareaNinja, _enemy.getChildAt(1)) && _enemy.attack == true) {
+            
+            const currentEnemySpriteSheetAttack = _enemy.getChildAt(0);
+            currentEnemySpriteSheetAttack.state.setAnimation(0, 'attack', true);
+
+            let timeToNinjaIsHurt = setTimeout(()=>{
+
+              this.ninja.stop();
+              this.ninja.texture = PIXI.Texture.from('../assets/images/ninja-hurt.png');
+
+              gsap.to(this.ninja, {
+                duration:.7,
+                y: 550,
+                ease: "Circ.easeOut", 
+                  onComplete: ()=>{
+                    this.ninja.play();
+                  
+                    gsap.to(this.ninja, {
+                      duration: .4,
+                      y: 768-150,
+                    })
+
+                  }
+
+              })
+
+            },300)
+
+            _enemy.alive = false;
+            _enemy.attack = false;
+
+            gsap.to(_enemy, {
+              duration:.7,
+              y: 550,
+              ease: "Circ.easeOut",
+                onComplete: ()=>{
+                
+                  gsap.to(_enemy, {
+                  duration: .5,
+                  y: 768-50,
+                  ease: "Circ.easeOut"
+                })
+
+                currentEnemySpriteSheetAttack.state.setAnimation(0, 'walk', true);
+                
+                
+
+              }//End onComplete
+            }) //End gsap
+
+          }//END Hittest
+
+        });//END forEach
+
+      }//END if       
+
+    })//END Ticker
 
   } // END constructor
 } // END class

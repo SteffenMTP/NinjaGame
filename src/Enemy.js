@@ -42,6 +42,7 @@ class Enemy {
             this.enemyContainer.x = this.startFrom;
             this.enemyContainer.data = this.enemyDuration[Math.floor(Math.random() * this.enemyDuration.length)]; 
             this.enemyContainer.alive = true;
+            this.enemyContainer.attack = true;
             this.enemyContainer.id = this.counter;
             this.enemyContainer.y = 768-50;
             this.enemyContainer.scale.x = this.front;
